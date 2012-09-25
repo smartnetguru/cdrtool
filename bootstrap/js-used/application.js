@@ -33,6 +33,8 @@
         e.preventDefault()
       })
 
+    $('fileupload').fileupload()
+
     // request built javascript
     $('.download-btn').on('click', function () {
 
