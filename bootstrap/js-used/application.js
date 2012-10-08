@@ -7,9 +7,7 @@
   $(function(){
 
     // tooltip demo
-    $('.tooltip-demo.well').tooltip({
-      selector: "a[rel=tooltip]"
-    })
+    $('tr[rel=tooltip]').tooltip()
 
     $('.tooltip-test').tooltip()
     $('.popover-test').popover()
