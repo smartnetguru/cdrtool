@@ -6,7 +6,13 @@
 
   $(function(){
 
-    // tooltip demo
+    $('#timepicker1').timepicker();
+    $('#timepicker2').timepicker();
+
+    $('#begin_date').datepicker();    
+
+    $('#end_date').datepicker();
+
     $('tr[rel=tooltip]').tooltip()
 
     $('.tooltip-test').tooltip()
