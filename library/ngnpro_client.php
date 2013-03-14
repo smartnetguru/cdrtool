@@ -32,7 +32,7 @@ require_once('ngnpro_soap_library.php');
                                 'customer'            => $customer,
                                 'extra_form_elements' => array()
                                 );
-    
+
     }
 
     // login_credentials can overwite SoapEngine->ports
@@ -44,21 +44,21 @@ require_once('ngnpro_soap_library.php');
                                            'description'   => 'Manage login accounts, customer information  and properties. Customer id can be assigned to entities like SIP domains and ENUM ranges. Use _ or % to match one or more characters. '
                                            );
 
-    
+
     require_once("ngnpro_client.phtml");
     require("/etc/cdrtool/ngnpro_engines.inc");
 
     $extraFormElements=array();
-    
+
     ////////////////////////////////
     // How to create a SIP record //
     ////////////////////////////////
-    
+
     $sip_engine          = 'sip_accounts@engine';
     $this->SipSoapEngine = new SoapEngine($sip_engine,$soapEngines,$login_credentials);
     $_sip_class          = $this->SipSoapEngine->records_class;
     $this->sipRecords    = new $_sip_class($this->SipSoapEngine);
-    
+
     $sipAccount = array('account'  => 'user@example.com',
                         'quota'    => $quota,
                         'prepaid'  => $prepaid,
@@ -68,52 +68,52 @@ require_once('ngnpro_soap_library.php');
                         'customer' => $customer,
                         'reseller' => $reseller
                         );
-    
+
     $this->sipRecords->addRecord($sipAccount);
 
     ////////////////////////////////
     // How to create a SIP domain //
     ////////////////////////////////
-    
+
     $sip_engine          = 'sip_accounts@engine';
     $this->SipSoapEngine = new SoapEngine($sip_engine,$soapEngines,$login_credentials);
     $_sip_class          = $this->SipSoapEngine->records_class;
     $this->sipRecords    = new $_sip_class($this->SipSoapEngine);
-    
+
     $sipDomain = array('domain'  => 'example.com',
                        'customer' => $customer,
                        'reseller' => $reseller
                       );
-    
+
     $this->sipRecords->addRecord($sipDomain);
 
     ///////////////////////////////
     // How to create a SIP alias //
     ///////////////////////////////
-    
+
     $sip_engine          = 'sip_aliases@engine';
     $this->SipSoapEngine = new SoapEngine($sip_engine,$soapEngines,$login_credentials);
     $_sip_class          = $this->SipSoapEngine->records_class;
     $this->sipRecords    = new $_sip_class($this->SipSoapEngine);
-    
+
     $sipAlias = array('alias'    => 'user@example1.com',
                       'target'   => 'user@example2.com',
                       'owner'    => $owner,
                       'customer' => $customer,
                       'reseller' => $reseller
                      );
-    
+
     $this->sipRecords->addRecord($sipAlias);
-    
+
     ///////////////////////////////////
     // How to create an ENUM mapping //
     ///////////////////////////////////
-    
+
     $enum_engine          = 'enum_numbers@engine';
     $this->EnumSoapEngine = new SoapEngine($enum_engine,$soapEngines,$login_credentials);
     $_enum_class          = $this->EnumSoapEngine->records_class;
     $this->enumRecords    = new $_enum_class($this->EnumSoapEngine);
-    
+
     $enumMapping = array('tld'      => $tld,
                          'number'   => $number,
                          'type'     => 'sip',
@@ -122,9 +122,9 @@ require_once('ngnpro_soap_library.php');
                          'customer' => $customer,
                          'reseller' => $reseller
                         );
-    
+
     $this->enumRecords->addRecord($enumMapping);
-    
+
 */
 
 class SoapEngine {
@@ -266,23 +266,23 @@ class SoapEngine {
         if (!$filter){
             $soapEngines_checked=$soapEngines;
         } else {
-    
+
             $_filter_els=explode(" ",$filter);
             foreach(array_keys($soapEngines) as $_engine) {
                 foreach ($_filter_els as $_filter) {
                     unset($_allowed_engine);
                     $_allowed_ports=array();
-    
+
                     list($_allowed_engine,$_allowed_ports_els) = explode(":",$_filter);
-    
+
                     if ($_allowed_ports_els) {
                         $_allowed_ports = explode(",",$_allowed_ports_els);
                     }
-    
+
                     if (count($_allowed_ports) == 0) {
                         $_allowed_ports=array_keys($this->ports);
                     }
-    
+
                     if ($_engine == $_allowed_engine) {
                         $soapEngines_checked[$_engine]=$soapEngines[$_engine];
                         $this->allowedPorts[$_engine]=$_allowed_ports;
@@ -490,7 +490,7 @@ class SoapEngine {
             if (strlen($this->soapEngines[$this->soapEngine]['store_clear_text_passwords'])) {
                 $this->store_clear_text_passwords=$this->soapEngines[$this->soapEngine]['store_clear_text_passwords'];
             }
-			
+
             if (strlen($this->login_credentials['record_generator'])) {
                 $this->record_generator=$this->login_credentials['record_generator'];
             } else if (strlen($this->soapEngines[$this->soapEngine]['record_generator'])) {
@@ -908,7 +908,7 @@ class Records {
         print "</div>
         </form>
         ";
-            
+
         if ($_REQUEST['action'] != 'Delete') $this->showAddForm();
     }
 
@@ -1211,20 +1211,20 @@ class Records {
             $filter=array('customer'=>intval($this->loginAccount->reseller));
             $range=array('start' => 0,'count' => 1);
             $orderBy = array('attribute' => 'customer','direction' => 'ASC');
-    
+
             // Compose query
             $Query=array('filter'     => $filter,
                             'orderBy' => $orderBy,
                             'range'   => $range
                             );
-    
-    
+
+
             // Insert credetials
             $this->SoapEngine->soapclientCustomers->addHeader($this->SoapEngine->SoapAuthCustomers);
-    
+
             // Call function
             $result     = $this->SoapEngine->soapclientCustomers->getResellers($Query);
-    
+
             if (PEAR::isError($result)) {
                 $error_msg  = $result->getMessage();
                 $error_fault= $result->getFault();
@@ -1339,7 +1339,7 @@ class Records {
             $randval = rand(0,9);
             $string="$string"."$alf[$randval]";
             $i++;
-        }          
+        }
         return $string;
     }
 
@@ -1428,7 +1428,7 @@ class Records {
     }
 
     function makebar($w) {
-        $return = "<div style='width:150px' class=\"progress\">"; 
+        $return = "<div style='width:150px' class=\"progress\">";
         if ($w < 0) $w = 0;
         if ($w > 100) $w = 100;
         $width = $w;
@@ -1438,7 +1438,7 @@ class Records {
             $return .= "<div style='width:150px' class=\"progress progress-info progress-striped\"><div class=\"bar\" style=\"width: $width%\"></div>";
         } else if ($width < 70) {
             $return .= "<div style='width:150px' class=\"progress progress-warning progress-striped\"><div class=\"bar\" style=\"width: $width%\"></div>";
-        } else {       
+        } else {
             $return .= "<div style='width:150px' class=\"progress progress-danger progress-striped\"><div class=\"bar\" style=\"width: $width%\"></div>";
         }
         $return .="</div>";
@@ -1751,7 +1751,7 @@ class SipDomains extends Records {
                         urlencode($this->SoapEngine->service),
                         urlencode($domain->domain)
                         );
-    
+
                         printf("
                         <tr>
                         <td>%s</td>
@@ -1988,7 +1988,7 @@ class SipDomains extends Records {
 
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 $result = $this->SoapEngine->soapclient->addAccount($account);
-    
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -2033,7 +2033,7 @@ class SipDomains extends Records {
 
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 $result = $this->SoapEngine->soapclient->addAlias($alias);
-    
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -2056,14 +2056,14 @@ class SipDomains extends Records {
             } else {
                 $domain = trim($_REQUEST['domain']);
             }
-    
+
             list($customer,$reseller)=$this->customerFromLogin($dictionary);
-    
+
             if (!$this->validDomain($domain)) {
                 print "<font color=red>Error: invalid domain name</font>";
                 return false;
             }
-    
+
             $domainStructure = array('domain'   => strtolower($domain),
                                      'customer' => intval($customer),
                                      'reseller' => intval($reseller)
@@ -2072,7 +2072,7 @@ class SipDomains extends Records {
                                                 'parameters' => array($domainStructure),
                                                 'logs'       => array('success' => sprintf('SIP domain %s has been added',$domain)))
                                                );
-    
+
             return $this->SoapEngine->execute($function,$this->html);
         }
     }
@@ -2188,7 +2188,7 @@ class SipDomains extends Records {
                 } else {
                     $item_name=ucfirst($item);
                 }
-    
+
                 if ($this->FieldsAdminOnly[$item]['type'] == 'text') {
                     printf ("<tr>
                     <td class=border valign=top>%s</td>
@@ -2317,7 +2317,7 @@ class SipDomains extends Records {
         $Query=array('filter'  => $filter,
                      'range'   => $range
                      );
-    
+
         $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
         $result     = $this->SoapEngine->soapclient->getDomains($Query);
 
@@ -2347,7 +2347,7 @@ class SipDomains extends Records {
         $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
         // Call function
         $result = call_user_func_array(array($this->SoapEngine->soapclient,'getAccounts'),array($Query));
-    
+
         if (PEAR::isError($result)) {
             $error_msg  = $result->getMessage();
             $error_fault= $result->getFault();
@@ -2367,7 +2367,7 @@ class SipDomains extends Records {
                              );
                 $this->SoapEngine->soapclientVoicemail->addHeader($this->SoapEngine->SoapAuthVoicemail);
                 $result = $this->SoapEngine->soapclientVoicemail->getAccount($sipId);
-    
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -2383,17 +2383,17 @@ class SipDomains extends Records {
                 $filter=array('targetUsername' => $account->id->username,
                               'targetDomain'   => $account->id->domain
                               );
-        
+
                 // Range
                 $range=array('start' => 0,
                              'count' => 20
                              );
-        
+
                 // Compose query
                 $Query=array('filter'  => $filter,
                              'range'   => $range
                              );
-        
+
                 // Call function
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 $result = $this->SoapEngine->soapclient->getAliases($Query);
@@ -2417,11 +2417,11 @@ class SipDomains extends Records {
             $filter=array(
                           'customer'     => intval($customer),
                           );
-    
+
             // Compose query
             $Query=array('filter'     => $filter
                             );
-    
+
             // Insert credetials
             $this->SoapEngine->soapclientCustomers->addHeader($this->SoapEngine->SoapAuth);
 
@@ -2666,7 +2666,7 @@ class SipAccounts extends Records {
                 if (count($_prepaid_accounts)) {
                     // Insert credetials
                     $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
-            
+
                     // Call function
                     $result1     = $this->SoapEngine->soapclient->getPrepaidStatus($_prepaid_accounts);
                     if (!PEAR::isError($result1)) {
@@ -2683,13 +2683,13 @@ class SipAccounts extends Records {
                 $i=0;
 
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->accounts[$i]) break;
-    
+
                     $account = $result->accounts[$i];
-    
+
                     $index=$this->next+$i+1;
-    
+
 			        $_url = $this->url.'&'.$this->addFiltersToURL().sprintf("&service=%s&action=Delete",
                     urlencode($this->SoapEngine->service)
                     );
@@ -2772,7 +2772,7 @@ class SipAccounts extends Records {
                         );
                     } else {
                         $_owner_url='';
-                    }          
+                    }
                     $prepaid_account=sprintf("%s@%s",$account->id->username,$account->id->domain);
 
                     if ($account->callLimit) {
@@ -2816,7 +2816,7 @@ class SipAccounts extends Records {
 
                     $i++;
                 }
-    
+
             }
 
             print "</table>";
@@ -2916,7 +2916,7 @@ class SipAccounts extends Records {
         }
 
         printf ("<form class='form-inline' method=post name=addform action=%s>",$_SERVER['PHP_SELF']);
-        
+
         print "
         <div class='well well-small'>
          ";
@@ -3172,7 +3172,7 @@ class SipAccounts extends Records {
                             'permission' => 'customer'
                            )
                       );
-    
+
             $this->setCustomerProperties($_p);
         }
 
@@ -3312,7 +3312,7 @@ class SipAccounts extends Records {
         if (count($accounts) > 1 || $_REQUEST['sip_filter']) {
             printf ("<br /><br />
                 <div class=\"alert alert-warning\"><strong>");
-            print _("Waring");
+            print _("Warning");
             print "</strong> ";
             print _("More than one account uses this email address. If you wish to receive the password for a particular account fill in the SIP account below, default it has been send it to the first 5 accounts found");
             print "</div>";
@@ -3354,7 +3354,7 @@ class SipAccounts extends Records {
         $Query   = array('filter'  => $filter,
                          'orderBy' => $orderBy,
                          'range'   => $range);
-        
+
         $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
         $result  = $this->SoapEngine->soapclient->getAccounts($Query);
         
@@ -3674,13 +3674,13 @@ class SipAliases extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->aliases[$i]) break;
-    
+
                     $alias = $result->aliases[$i];
-    
+
                     $index=$this->next+$i+1;
-    
+
                     $_url = $this->url.sprintf("&service=%s&action=Delete&alias_username_filter=%s&alias_domain_filter=%s",
                     urlencode($this->SoapEngine->service),
                     urlencode($alias->id->username),
@@ -3719,7 +3719,7 @@ class SipAliases extends Records {
                         );
                     } else {
                         $_owner_url='';
-                    }          
+                    }
 
                     printf("
                     <tr>
@@ -3743,9 +3743,9 @@ class SipAliases extends Records {
                     $actionText
                     );
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -3824,11 +3824,11 @@ class SipAliases extends Records {
                 $selected_domain[$this->filters['alias_domain']]='selected';
                 printf ("<select name=alias_domain_filter>
                 <option>");
-    
+
                 foreach ($this->allowedDomains as $_domain) {
                     printf ("<option value='$_domain' %s>$_domain",$selected_domain[$_domain]);
                 }
-    
+
                 printf ("</select>");
             }
         } else {
@@ -3947,7 +3947,7 @@ class SipAliases extends Records {
                             'permission' => 'customer'
                            )
                       );
-    
+
             $this->setCustomerProperties($_p);
         }
 
@@ -3969,7 +3969,7 @@ class SipAliases extends Records {
                                             'parameters' => array($alias),
                                             'logs'       => array('success' => sprintf('SIP alias %s@%s has been added',$username,$domain)))
                         );
-     
+
         return $this->SoapEngine->execute($function,$this->html);
     }
 
@@ -4124,7 +4124,7 @@ class EnumRanges extends Records {
 
         $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
         $result     = $this->SoapEngine->soapclient->getRanges($Query);
-    
+
         if (PEAR::isError($result)) {
             $error_msg  = $result->getMessage();
             $error_fault= $result->getFault();
@@ -4175,12 +4175,12 @@ class EnumRanges extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->ranges[$i]) break;
                     $range = $result->ranges[$i];
 
                     $index=$this->next+$i+1;
-    
+
                     $_url = $this->url.sprintf("&service=%s&action=Delete&prefix_filter=%s&tld_filter=%s",
                     urlencode($this->SoapEngine->service),
                     urlencode($range->id->prefix),
@@ -4264,9 +4264,9 @@ class EnumRanges extends Records {
                     $generator_url
                     );
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -4417,7 +4417,7 @@ class EnumRanges extends Records {
                                             'parameters' => array($range),
                                             'logs'       => array('success' => sprintf('ENUM range +%s under %s has been added',$prefix,$tld)))
                         );
-     
+
         $result = $this->SoapEngine->execute($function,$this->html);
 
         dprint_r($result);
@@ -4537,7 +4537,7 @@ class EnumRanges extends Records {
                 } else {
                     $item_name=ucfirst($item);
                 }
-    
+
                 if ($this->FieldsAdminOnly[$item]['type'] == 'text') {
                     printf ("<tr>
                     <td class=border valign=top>%s</td>
@@ -4679,7 +4679,7 @@ class EnumRanges extends Records {
                                             'parameters' => array($range),
                                             'logs'       => array('success' => sprintf('ENUM range +%s under %s has been updated',$rangeid['prefix'],$rangeid['tld'])))
                         );
-     
+
         $result = $this->SoapEngine->execute($function,$this->html);
         dprint_r($result);
 
@@ -4963,12 +4963,12 @@ class EnumMappings extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->numbers[$i]) break;
-    
+
                     $number = $result->numbers[$i];
                     $index=$this->next+$i+1;
-    
+
                     $j=1;
 
                     foreach ($number->mappings as $_mapping) {
@@ -4993,14 +4993,14 @@ class EnumMappings extends Records {
                         if (preg_match("/^sip:(.*)$/",$_mapping->mapto,$m) && $this->sip_settings_page) {
                             $url=sprintf('%s?account=%s&reseller=%s&sip_engine=%s',
                             $this->sip_settings_page,urlencode($m[1]), $number->reseller,$sip_engine);
-    
+
                             if ($this->adminonly) $url  .= sprintf('&adminonly=%s',$this->adminonly);
-    
+
                             foreach (array_keys($this->SoapEngine->extraFormElements) as $element) {
                                 if (!strlen($this->SoapEngine->extraFormElements[$element])) continue;
                                 $url  .= sprintf('&%s=%s',$element,urlencode($this->SoapEngine->extraFormElements[$element]));
                             }
-    
+
                             $mapto=sprintf("
                             <a href=\"javascript:void(null);\" onClick=\"return window.open('%s', 'SIP_Settings',
                             'toolbar=1,status=1,menubar=1,scrollbars=1,resizable=1,width=800,height=720')\">
@@ -5017,7 +5017,7 @@ class EnumMappings extends Records {
                         );
 
                         if ($this->adminonly) $_url.= sprintf ("&reseller_filter=%s",$number->reseller);
-    
+
                         if ($_REQUEST['action'] == 'Delete' &&
                             $_REQUEST['number_filter'] == $number->id->number &&
                             $_REQUEST['tld_filter'] == $number->id->tld &&
@@ -5053,7 +5053,7 @@ class EnumMappings extends Records {
                                 );
                             } else {
                                 $_owner_url='';
-                            }          
+                            }
 
                             printf("
                             <tr>
@@ -5158,7 +5158,7 @@ class EnumMappings extends Records {
                             );
                         } else {
                             $_owner_url='';
-                        }          
+                        }
 
                         printf("
                         <tr>
@@ -5194,9 +5194,9 @@ class EnumMappings extends Records {
                     ");
 
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -5353,14 +5353,14 @@ class EnumMappings extends Records {
                 if (!is_array($mappings_new)) $mappings_new = array();
 
                 $result_new->mappings=$mappings_new;
-    
+
                 $function=array('commit'   => array('name'       => 'updateNumber',
                                                     'parameters' => array($result_new),
                                                     'logs'       => array('success' => sprintf('ENUM mapping %s has been deleted',$mapto)))
                                 );
 
                 $result = $this->SoapEngine->execute($function,$this->html);
-        
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -5379,7 +5379,7 @@ class EnumMappings extends Records {
                                 );
 
                 $result = $this->SoapEngine->execute($function,$this->html);
-        
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -5416,7 +5416,7 @@ class EnumMappings extends Records {
         print "
         <div class='well well-small'>
         ";
-       
+
         if ($this->adminonly) {
         	printf (" <input type=hidden name=reseller_filter value='%s'>",$this->filters['reseller']);
         }
@@ -5525,7 +5525,7 @@ class EnumMappings extends Records {
 
         $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
         $result     = $this->SoapEngine->soapclient->getRanges($Query);
-    
+
         if (PEAR::isError($result)) {
             $error_msg  = $result->getMessage();
             $error_fault= $result->getFault();
@@ -5664,7 +5664,7 @@ class EnumMappings extends Records {
                            );
 
         if (!$this->skipSaveProperties=true) {
-    
+
             $_p=array(
                       array('name'       => 'enum_numbers_last_range',
                             'category'   => 'web',
@@ -5687,7 +5687,7 @@ class EnumMappings extends Records {
                             'permission' => 'customer'
                            )
                       );
-    
+
             $this->setCustomerProperties($_p);
         }
 
@@ -5705,9 +5705,9 @@ class EnumMappings extends Records {
                                                     'parameters' => array($enum_number),
                                                     'logs'       => array('success' => sprintf('ENUM number +%s under %s has been added',$number,$tld)))
                                 );
-             
+
                 $result = $this->SoapEngine->execute($function,$this->html);
-        
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -5755,7 +5755,7 @@ class EnumMappings extends Records {
                             );
 
             $result = $this->SoapEngine->execute($function,$this->html);
-    
+
             if (PEAR::isError($result)) {
                 $error_msg  = $result->getMessage();
                 $error_fault= $result->getFault();
@@ -6037,9 +6037,9 @@ class EnumMappings extends Records {
                 if (!$_scheme || !in_array($_scheme,$this->NAPTR_services[trim($type)]['schemas'])) {
                     $_scheme=$this->NAPTR_services[trim($type)]['schemas'][0];
                 }
-        
+
                 $mapto=$_scheme.$_value;
-    
+
                 $new_mappings[]=array( 'type'     => $type,
                                        'ttl'      => $ttl,
                                        'id'       => intval($id),
@@ -6232,12 +6232,12 @@ class DnsZones extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->zones[$i]) break;
                     $zone = $result->zones[$i];
 
                     $index=$this->next+$i+1;
-    
+
                     $_url = $this->url.sprintf("&service=%s&action=Delete&name_filter=%s",
                     urlencode($this->SoapEngine->service),
                     urlencode($zone->name)
@@ -6313,9 +6313,9 @@ class DnsZones extends Records {
                     ");
 
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -6513,7 +6513,7 @@ class DnsZones extends Records {
                 }
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 $result = $this->SoapEngine->soapclient->addRecord($record);
-    
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -6552,20 +6552,20 @@ class DnsZones extends Records {
                 printf ("<p><font color=red>Error: Missing zone name. </font>");
                 return false;
             }
-    
+
             if (is_numeric($prefix)) {
                 printf ("<p><font color=red>Error: Numeric zone names are not allowed. Use ENUM port instead. </font>");
                 return false;
             }
-    
+
             list($customer,$reseller)=$this->customerFromLogin($dictionary);
-    
+
             if (!trim($_REQUEST['ttl'])) {
                 $ttl=3600;
             } else {
                 $ttl=intval(trim($_REQUEST['ttl']));
             }
-    
+
             if ($name_servers)  {
                 $ns_array=explode(" ",trim($name_servers));
             } else if ($this->login_credentials['login_type'] != 'admin' && $this->SoapEngine->name_servers){
@@ -6573,7 +6573,7 @@ class DnsZones extends Records {
             } else {
                 $ns_array=array();
             }
-    
+
             $zone=array(
                          'name'        => $name,
                          'ttl'         => $ttl,
@@ -6582,15 +6582,15 @@ class DnsZones extends Records {
                          'reseller'    => intval($reseller),
                          'nameservers' => $ns_array
                         );
-    
+
             $function=array('commit'   => array('name'       => 'addZone',
                                                 'parameters' => array($zone),
                                                 'logs'       => array('success' => sprintf('DNS zone %s has been added',$name)))
                             );
-    
+
             $result = $this->SoapEngine->execute($function,$this->html);
             dprint_r($result);
-    
+
             if (PEAR::isError($result)) {
                 $error_msg  = $result->getMessage();
                 $error_fault= $result->getFault();
@@ -6642,7 +6642,7 @@ class DnsZones extends Records {
                 } else {
                     $item_name=ucfirst($item);
                 }
-    
+
                 if ($this->FieldsAdminOnly[$item]['type'] == 'text') {
                     printf ("<tr>
                     <td class=border valign=top>%s</td>
@@ -7336,9 +7336,9 @@ class DnsRecords extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->records[$i]) break;
-    
+
                     $record = $result->records[$i];
                     $index=$this->next+$i+1;
 
@@ -7390,7 +7390,7 @@ class DnsRecords extends Records {
                         );
                     } else {
                         $_owner_url='';
-                    }          
+                    }
 
 		            if ($this->fancy) {
                         printf("
@@ -7582,7 +7582,7 @@ class DnsRecords extends Records {
             } else if ($_zone=$this->getCustomerProperty('dns_records_last_zone')) {
                 $selected_zone[$_zone]='selected';
             }
-    
+
             print ".<select name=zone>";
             foreach ($this->allowedDomains as $_zone) {
                 printf ("<option value='%s' %s>%s",$_zone,$selected_zone[$_zone],$_zone);
@@ -7604,13 +7604,13 @@ class DnsRecords extends Records {
         } else {
             print " <div class='input-prepend'><span class='add-on'>Type</span><select name=type>
             ";
-    
+
             if ($_REQUEST['type']) {
                 $selected_type[$_REQUEST['type']]='selected';
             } else if ($_type=$this->getCustomerProperty('dns_records_last_type')) {
                 $selected_type[$_type]='selected';
             }
-    
+
             foreach(array_keys($this->recordTypes) as $_type) {
                 printf ("<option value='%s' %s>%s - %s",$_type,$selected_type[$_type],$_type,$this->recordTypes[$_type]);
             }
@@ -7618,7 +7618,7 @@ class DnsRecords extends Records {
             foreach(array_keys($this->recordTypesTemplate) as $_type) {
                 printf ("<option value='%s' %s>%s",$_type,$selected_type[$_type],$this->recordTypesTemplate[$_type]['name']);
             }
-    
+
             print "
             </select></div>
             ";
@@ -7784,9 +7784,9 @@ class DnsRecords extends Records {
                           'ttl'      => intval($ttl),
                           'priority' => intval($priority)
                           );
-     
+
             if (!$this->skipSaveProperties=true) {
-        
+
                 $_p=array(
                           array('name'       => 'dns_records_last_zone',
                                 'category'   => 'web',
@@ -7799,15 +7799,15 @@ class DnsRecords extends Records {
                                 'permission' => 'customer'
                                )
                           );
-        
+
                 $this->setCustomerProperties($_p);
             }
-     
+
             $function=array('commit'   => array('name'       => $this->addRecordFunction,
                                                 'parameters' => array($record),
                                                 'logs'       => array('success' => sprintf('DNS record %s under %s has been added',$name,$zone))),
                             );
-         
+
             $result = $this->SoapEngine->execute($function,$this->html);
             dprint_r($result);
 
@@ -7867,7 +7867,7 @@ class DnsRecords extends Records {
                                         'permission' => 'customer'
                                        )
                                   );
-                
+
                         $this->setCustomerProperties($_p);
                     }
                 }
@@ -7999,7 +7999,7 @@ class DnsRecords extends Records {
                 foreach(array_keys($this->recordTypes) as $_type) {
                     $select_box.=sprintf ("<option value='%s' %s>%s - %s",$_type,$selected_type[$_type],$_type,$this->recordTypes[$_type]);
                 }
-    
+
                 foreach(array_keys($this->recordTypesTemplate) as $_type) {
                     $select_box.=sprintf ("<option value='%s' %s>%s",$_type,$selected_type[$_type],$this->recordTypesTemplate[$_type]['name']);
                 }
@@ -8280,11 +8280,11 @@ class TrustedPeers extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->peers[$i]) break;
-    
+
                     $peer = $result->peers[$i];
-    
+
                     $index=$this->next+$i+1;
 
                     $_url = $this->url.sprintf("&service=%s&action=Delete&ip_filter=%s",
@@ -8402,7 +8402,7 @@ class TrustedPeers extends Records {
                                             'parameters' => array($peer),
                                             'logs'       => array('success' => sprintf('Trusted peer %s has been added',$ipaddress)))
                         );
-     
+
         return $this->SoapEngine->execute($function,$this->html);
     }
 
@@ -8421,7 +8421,7 @@ class TrustedPeers extends Records {
                                             'parameters' => array($this->filters['ip']),
                                             'logs'       => array('success' => sprintf('Trusted peer %s has been deleted',$this->filters['ip'])))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
     }
@@ -8556,9 +8556,9 @@ class Carriers extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->carriers[$i]) break;
-    
+
                     $carrier = $result->carriers[$i];
 
                     $index=$this->next+$i+1;
@@ -8619,9 +8619,9 @@ class Carriers extends Records {
                     </tr>
                     ");
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -8682,7 +8682,7 @@ class Carriers extends Records {
                                             'parameters' => array($structure),
                                             'logs'       => array('success' => sprintf('Carrier %s has been added',$name)))
                         );
-     
+
         return $this->SoapEngine->execute($function,$this->html);
     }
 
@@ -8707,7 +8707,7 @@ class Carriers extends Records {
                                             'parameters' => array(intval($id)),
                                             'logs'       => array('success' => sprintf('Carrier %d has been deleted',$id)))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
     }
@@ -8981,11 +8981,11 @@ class Gateways extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->gateways[$i]) break;
-    
+
                     $gateway = $result->gateways[$i];
-    
+
                     $index=$this->next+$i+1;
 
                     $_delete_url = $this->url.sprintf("&service=%s&action=Delete&id_filter=%s",
@@ -9059,9 +9059,9 @@ class Gateways extends Records {
                     ");
 
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -9101,7 +9101,7 @@ class Gateways extends Records {
         foreach (array_keys($this->carriers) as $_carrier) {
             printf ("<option value='%s'>%s",$_carrier,$this->carriers[$_carrier]);
         }
-        
+
         printf (" </select>");
 
         printf ("  <div class=input-prepend><span class=\"add-on\">Name</span><input class=span2 type=text size=20 name=name></div>");
@@ -9183,7 +9183,7 @@ class Gateways extends Records {
                                             'parameters' => array($gateway),
                                             'logs'       => array('success' => sprintf('Gateway %s has been added',$name)))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
     }
@@ -9280,9 +9280,9 @@ class Gateways extends Records {
                     foreach ($this->transports as $_transport) {
                         printf ("<option value='%s' %s>%s",$_transport,$selected_transport[$_transport],$_transport);
                     }
-    
+
                     print "</select></div>";
-    
+
                 } else {
                     printf ("<div class=controls><input class=span2 name=%s_form size=30 type=text value='%s'></div>",
                     $item,
@@ -9517,9 +9517,9 @@ class GatewayRules extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->gateway_rules[$i]) break;
-    
+
                     $gateway_rule = $result->gateway_rules[$i];
 
                     $index=$this->next+$i+1;
@@ -9596,9 +9596,9 @@ class GatewayRules extends Records {
                     ");
 
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -9707,7 +9707,7 @@ class GatewayRules extends Records {
                                             'parameters' => array($rule),
                                             'logs'       => array('success' => sprintf('Gateway rule has been added')))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
     }
@@ -9801,7 +9801,7 @@ class GatewayRules extends Records {
                     }
 
                     print "</select></div>";
-    
+
                 } else {
                     printf ("<div class=controls><input class=span2 name=%s_form size=30 type=text value='%s'></div>",
                     $item,
@@ -10027,11 +10027,11 @@ class Routes extends Records {
 
             if ($this->rows) {
                 while ($i < $maxrows)  {
-    
+
                     if (!$result->routes[$i]) break;
-    
+
                     $route = $result->routes[$i];
-    
+
                     $index=$this->next+$i+1;
 
                     $_delete_url = $this->url.sprintf("&service=%s&action=Delete&id_filter=%d",
@@ -10101,9 +10101,9 @@ class Routes extends Records {
                     </tr>
                     ");
                     $i++;
-    
+
                 }
-    
+
             }
 
             print "</table>";
@@ -10181,7 +10181,7 @@ class Routes extends Records {
             printf ("<p><font color=red>Error: Missing carrier id. </font>");
             return false;
         }
- 
+
         $route=array(
                      'prefix'       => $prefix,
                      'originator'   => $originator,
@@ -10195,7 +10195,7 @@ class Routes extends Records {
                                             'parameters' => array($routes),
                                             'logs'       => array('success' => sprintf('Route %s has been added',$prefix)))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
 
@@ -10226,7 +10226,7 @@ class Routes extends Records {
                                             'parameters' => array($routes),
                                             'logs'       => array('success' => sprintf('Route %s has been deleted',$prefix)))
                         );
-     
+
         unset($this->filters);
         return $this->SoapEngine->execute($function,$this->html);
     }
@@ -10713,7 +10713,7 @@ class Customers extends Records {
         array("label"=>"AAO", "value"=>"AA"),
         array("label"=>"FPO", "value"=>"FP")
         );
-        
+
         var $countries=array(
         array("label"=>"Ascension Island",    "value"=>"AC"),
         array("label"=>"Afghanistan",        "value"=>"AF"),
@@ -11167,11 +11167,11 @@ class Customers extends Records {
                 while ($i < $maxrows)  {
 
                     if (!$result->accounts[$i]) break;
-    
+
                     $customer = $result->accounts[$i];
 
                     $index = $this->next+$i+1;
-    
+
                     $_url = $this->url.sprintf("&service=%s&action=Delete&reseller_filter=%s&customer_filter=%s",
                     urlencode($this->SoapEngine->service),
                     urlencode($customer->reseller),
@@ -11463,7 +11463,7 @@ class Customers extends Records {
                             foreach (array_keys($this->children) as $_child) {
                                 printf ("<option value='%s' %s>%s. %s %s",$_child,$selected_impersonate[$_child],$_child,$this->children[$_child]['firstName'],$this->children[$_child]['lastName']);
                             }
-        
+
                             print "
                             </select>
                             ";
@@ -12056,7 +12056,7 @@ class Customers extends Records {
                                                 'parameters' => array($customer_new),
                                                 'logs'       => array('success' => sprintf('Customer id %s has been copied',$customer->id)))
                             );
-    
+
             if ($this->SoapEngine->execute($function,$this->html)) {
                 // Reset filters to find the copy
                 $this->filters=array();
@@ -12393,7 +12393,7 @@ class Customers extends Records {
             } else {
                 $protocolURL="http://";
             }
-    
+
             $url=sprintf("%s%s",$protocolURL,$_SERVER['HTTP_HOST']);
         }
 
@@ -12622,15 +12622,15 @@ class Customers extends Records {
             $value=$vcardDictionary[$field];
             ${$field}=$value;
         }
-    
+
         if ($vcard_w_state=="N/A") $vcard_w_state=" ";
         $vcard_w_addr = preg_replace("/[\n|\r]/"," ",$vcard_w_addr);
-    
+
         $vcard_sortst = $vcard_f_name;
-    
+
         $vcard_tz = date("O");
         $vcard_rev = date("Y-m-d");
-    
+
         $vcard = "BEGIN:VCARD\r\n";
         $vcard .= "VERSION:3.0\r\n";
         $vcard .= "CLASS:PUBLIC\r\n";
@@ -12694,8 +12694,8 @@ class Customers extends Records {
         if ($vcard_w_fax != ""){
             $vcard .= "TEL;TYPE=FAX,WORK:" . $vcard_w_fax . "\r\n";
         }
-        if ($vcard_w_phon != ""){          
-                    $vcard .= "TEL;TYPE=VOICE,WORK:" . $vcard_w_phon . "\r\n";         
+        if ($vcard_w_phon != ""){
+                    $vcard .= "TEL;TYPE=VOICE,WORK:" . $vcard_w_phon . "\r\n";
             }
         if ($vcard_uri != ""){
             $vcard .= "URL:" . $vcard_uri . "\r\n";
@@ -12714,9 +12714,9 @@ class Customers extends Records {
             }
         if ($vcard_w_city != ""){
                     if ($vcard_addr != ""){
-                            $vcard_addr .= ";" . $vcard_w_city;  
+                            $vcard_addr .= ";" . $vcard_w_city;
                     }
-                    else{ 
+                    else{
                             $vcard_addr .= ";;;" . $vcard_w_city;
                     }
                     if ($vcard_labl != ""){
@@ -12730,7 +12730,7 @@ class Customers extends Records {
                     if ($vcard_addr != ""){
                             $vcard_addr .= ";" . $vcard_w_state;
                     }
-                    else{ 
+                    else{
                             $vcard_addr .= ";;;" . $vcard_w_state;
                     }
                     if ($vcard_labl != ""){
@@ -12750,7 +12750,7 @@ class Customers extends Records {
                     if ($vcard_labl != ""){
                             $vcard_labl .= "\\r\\n" . $vcard_w_zip;
                     }
-                    else {  
+                    else {
                             $vcard_labl = $vcard_w_zip;
                     }
             }
@@ -12777,7 +12777,7 @@ class Customers extends Records {
         if ($vcard_categ != ""){
             $vcard .= "CATEGORY:" . $vcard_categ . "\r\n";
         }
-    
+
         $vcard .= "END:VCARD\n";
         return $vcard;
     }
@@ -12811,17 +12811,17 @@ class Presence {
                                   'busy',
                                   'available'
                                  );
-    
+
         if (in_array($activity,$allowed_activities)) {
             $presentity['activity'] = $activity;
         } else {
             $presentity['activity'] = 'open';
         }
-    
+
         $presentity['note']     = $note;
 
         $result = $this->PresencePort->setPresenceInformation(array("username" =>$SIPaccount['username'],"domain"   =>$SIPaccount['domain']),$SIPaccount['password'], $presentity);
-    
+
         if (PEAR::isError($result)) {
             $error_msg  = $result->getMessage();
             $error_fault= $result->getFault();
@@ -12829,7 +12829,7 @@ class Presence {
             printf ("<p><font color=red>Error: %s (%s): %s</font>",$error_msg, $error_fault->detail->exception->errorcode,$error_fault->detail->exception->errorstring);
             return false;
         }
-    
+
         return true;
     }
 
@@ -12852,7 +12852,7 @@ class Presence {
         $this->PresencePort->setOpt('curl', CURLOPT_SSL_VERIFYHOST, 0);
 
         $result = $this->PresencePort->getPresenceInformation(array("username" =>$SIPaccount['username'],"domain"   =>$SIPaccount['domain']),$SIPaccount['password']);
-    
+
         if (PEAR::isError($result)) {
             $error_msg  = $result->getMessage();
             $error_fault= $result->getFault();
@@ -12981,7 +12981,7 @@ class recordGenerator extends SoapEngine {
         </td>
         </tr>
         ";
-    
+
         print "
         <tr>
         <td>";
@@ -13061,7 +13061,7 @@ class recordGenerator extends SoapEngine {
         <tr>
         <td>
         ",$number_length);
-    
+
         print _("SIP domain:");
         print "
         <td align=right>
@@ -13141,7 +13141,7 @@ class recordGenerator extends SoapEngine {
             </td>
             </tr>
             ";
-    
+
             print "
             <tr>
             <td colspan=2>
@@ -13542,7 +13542,7 @@ class recordGenerator extends SoapEngine {
                 printf ('and sip account %s@%s ',$username,$this->template['domain']);
 
                 $ip_access_list = check_ip_access_list($this->template['ip_access_list']);
-    
+
                 $sipAccount = array('account'        => $username.'@'.$this->template['domain'],
                                     'quota'          => $this->template['quota'],
                                     'prepaid'        => $this->template['prepaid'],
@@ -13771,7 +13771,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has been blocked',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13783,7 +13783,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has been de-blocked',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13799,7 +13799,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has been removed from group %s',$key['username'],$key['domain'],$sub_action_parameter)
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13815,7 +13815,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s is now in group %s',$key['username'],$key['domain'],$sub_action_parameter)
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13827,7 +13827,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has been deblocked from quota',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13839,7 +13839,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has no access to the PSTN',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13851,7 +13851,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has access to the PSTN',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13863,7 +13863,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s has been deleted',$key['username'],$key['domain'])
                                                                           )
                                                    )
-        
+
                                 );
 
                 $this->SoapEngine->execute($function,$this->html);
@@ -13894,7 +13894,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s is now prepaid',$key['username'],$key['domain'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -13922,7 +13922,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s is now postpaid',$key['username'],$key['domain'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -13951,12 +13951,12 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has quota set to %s',$key['username'],$key['domain'],$sub_action_parameter)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
                 }
-                
+
             } else if ($action=='rmdsfromrpid') {
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 $result     = $this->SoapEngine->soapclient->getAccount($account);
@@ -13990,7 +13990,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has PSTN caller ID set to %s',$key['username'],$key['domain'],$result->rpid)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14021,7 +14021,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has PSTN caller ID set to %s',$key['username'],$key['domain'],$key['username'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14056,7 +14056,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has PSTN caller ID set to %s ',$key['username'],$key['domain'],$result->rpid)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14091,7 +14091,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has customer set to %s ',$key['username'],$key['domain'],$result->customer)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14126,7 +14126,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s has owner set to %s ',$key['username'],$key['domain'],$result->owner)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14155,7 +14155,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s first name has been set to %s ',$key['username'],$key['domain'],$result->firstName)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14184,7 +14184,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('SIP account %s@%s last name has been set to %s ',$key['username'],$key['domain'],$result->lastName)
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14213,7 +14213,7 @@ class SipAccountsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('Password for SIP account %s@%s has been changed',$key['username'],$key['domain'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
 
@@ -14245,7 +14245,7 @@ class SipAccountsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('SIP account %s@%s balance has been increased with %s',$key['username'],$key['domain'],$sub_action_parameter)
                                                                           )
                                                    )
-        
+
                                 );
                 $this->SoapEngine->execute($function,$this->html);
 
@@ -14283,7 +14283,7 @@ class SipAliasesActions extends Actions {
                         );
 
             if ($action=='delete') {
-    
+
                 $function=array('commit'   => array('name'       => 'deleteAlias',
                                                     'parameters' => array($alias),
                                                     'logs'       => array('success' => sprintf('SIP alias %s@%s has been deleted',$key['username'],$key['domain'])
@@ -14340,9 +14340,9 @@ class EnumMappingsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('ENUM number +%s under %s has been deleted',$key['number'],$key['tld'])
                                                                           )
                                                    )
-        
+
                                 );
-    
+
                 $this->SoapEngine->execute($function,$this->html);
             } else if ($action  == 'changettl') {
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
@@ -14386,7 +14386,7 @@ class EnumMappingsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('ENUM number %s@%s TTL has been set to %d',$key['number'],$key['tld'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14491,9 +14491,9 @@ class DnsRecordsActions extends Actions {
                                                     'logs'       => array('success' => sprintf('Record %d has been deleted',$key['id'])
                                                                           )
                                                    )
-        
+
                                 );
-    
+
                 $this->SoapEngine->execute($function,$this->html);
             } else if ($action  == 'changettl') {
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
@@ -14519,7 +14519,7 @@ class DnsRecordsActions extends Actions {
                                                         'logs'       => array('success' => sprintf('TTL for record %d has been set to %d',$key['id'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14624,7 +14624,7 @@ class DnsZonesActions extends Actions {
                                                     'logs'       => array('success' => sprintf('Zone %s has been deleted',$key['name'])
                                                                           )
                                                    )
-        
+
                                 );
                 $this->SoapEngine->execute($function,$this->html);
             } else if ($action=='export') {
@@ -14632,7 +14632,7 @@ class DnsZonesActions extends Actions {
                 $filter=array(
                               'zone'     => $key['name']
                               );
-        
+
                 $range   = array('start' => 0,'count' => 5000);
                 // Compose query
                 $Query=array('filter'  => $filter,
@@ -14661,7 +14661,7 @@ class DnsZonesActions extends Actions {
                 $this->SoapEngine->soapclient->addHeader($this->SoapEngine->SoapAuth);
                 // Call function
                 $result = call_user_func_array(array($this->SoapEngine->soapclient,'getRecords'),array($Query));
-        
+
                 if (PEAR::isError($result)) {
                     $error_msg  = $result->getMessage();
                     $error_fault= $result->getFault();
@@ -14696,7 +14696,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('TTL for zone %s has been set to %d',$key['name'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14724,7 +14724,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('Expire for zone %s has been set to %d',$key['name'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14752,7 +14752,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('Minimum for zone %s has been set to %d',$key['name'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14776,7 +14776,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('Added NS record %s for zone %s',$sub_action_parameter,$key['name'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14804,7 +14804,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('NS record %s removed from zone %s',$sub_action_parameter,$key['name'])
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14832,7 +14832,7 @@ class DnsZonesActions extends Actions {
                                                         'logs'       => array('success' => sprintf('Retry for zone %s has been set to %d',$key['name'],intval($sub_action_parameter))
                                                                               )
                                                        )
-            
+
                                     );
                     $this->SoapEngine->execute($function,$this->html);
                 }
@@ -14868,11 +14868,11 @@ class DnsZonesActions extends Actions {
                 $filter=array(
                               'customer'     => intval($customer),
                               );
-        
+
                 // Compose query
                 $Query=array('filter'     => $filter
                                 );
-        
+
                 // Insert credetials
                 $this->SoapEngine->soapclientCustomers->addHeader($this->SoapEngine->SoapAuth);
 
@@ -14974,7 +14974,7 @@ function objectToArray($d) {
 			// with get_object_vars function
 			$d = get_object_vars($d);
 		}
- 
+
 		if (is_array($d)) {
 			/*
 			* Return array converted to object
