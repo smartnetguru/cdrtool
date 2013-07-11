@@ -1510,7 +1510,7 @@ class SipSettings {
                                                     "ResellerMayEditIt"=>1,
                                                     "ResellerMaySeeIt"=>1
                                                     );
-    
+
                     if ($this->sms_access) {
                         $this->availableGroups['sms']  = array("Group"=>"sms",
                                                         "WEBName" =>sprintf(_("Mobile SMS")),
@@ -1519,7 +1519,7 @@ class SipSettings {
                                                         "ResellerMayEditIt"=>0,
                                                         "ResellerMaySeeIt"=>1
                                                         );
-    
+
                     }
                 }
 
@@ -1687,7 +1687,7 @@ class SipSettings {
                                     "ResellerMayEditIt"=>1,
                                     "ResellerMaySeeIt"=>1
                                     );
-    
+
             if ($this->sms_access) {
                 $this->availableGroups['sms']  = array("Group"=>"sms",
                                                 "WEBName" =>sprintf(_("Mobile SMS")),
@@ -1696,7 +1696,7 @@ class SipSettings {
                                                 "ResellerMayEditIt"=>0,
                                                 "ResellerMaySeeIt"=>1
                                                 );
-    
+
             }
         }
 
@@ -3082,7 +3082,7 @@ class SipSettings {
         print "
         </label>
         <div class='controls'><div>";
-        
+
         print '<input class=input-medium type=password size=15 name=web_password  rel="popover" title="" data-original-title="';
         print _("Web Password");
         print "\" data-trigger=\"focus\" data-toggle=\"popover button\" data-content=\"";
@@ -3195,13 +3195,13 @@ class SipSettings {
 
         if ($this->pstn_access) {
             if (in_array("free-pstn",$this->groups)) {
-    
+
                 if (in_array("quota",$this->groups)) {
                     $_class="alert alert-error";
                 } else {
                     $_class="";
                 }
-    
+
                 if ($this->pstn_changes_allowed) {
                     print "
                         <div class='control-group'>
@@ -3211,7 +3211,7 @@ class SipSettings {
                     print "
                     </label>
                     <div class='controls'><div class='input-prepend'>";
-    
+
                     printf ("<span class='add-on'>%s</span><input class=input-medium type=text size=6 maxsize=6 name=quota value='%s'></div><span class='help-inline muted'>",$this->currency,$this->quota);
                     //print "<div class=span10>";
                     if ($this->quota || in_array("quota",$this->groups)) {
@@ -3222,10 +3222,10 @@ class SipSettings {
                             print _("Calls ");
                         }
                     }
-    
+
                     print "</span> ";
-    
-    
+
+
                     if ($this->pstn_changes_allowed) {
                         print "<label class='checkbox inline'>";
                         print "
@@ -3233,7 +3233,7 @@ class SipSettings {
                         print _("Un-block");
                         print "</label>";
                     }
-    
+
                     print "</div></div>
                     </div>
                     ";
@@ -3254,11 +3254,11 @@ class SipSettings {
                         printf (" / %d ",$this->thisMonth['calls']);
                         print _("Calls");
                     }
-    
+
                     print "</span></div>
                     </div>
                     ";
-    
+
                 }
             }
 
@@ -7936,7 +7936,7 @@ class SipSettings {
             }
             return false;
         }
-    
+
         $this->csr = openssl_csr_new($dn, $this->key);
 
         if (!$this->csr) {
@@ -10702,8 +10702,8 @@ function getSipAccountFromHTTPDigest () {
         $A1 = $web_password;
         $login_type_log = 'web password';
 
-        $log=sprintf("TEST %s %s %s %s", $data['username'], $realm, $web_password , $data['nonce']);
-        syslog(LOG_NOTICE, $log);
+        //$log=sprintf("TEST %s %s %s %s", $data['username'], $realm, $web_password , $data['nonce']);
+        //syslog(LOG_NOTICE, $log);
 //    } else if (strstr($data['username'], '@')) {
 //        $A1 = md5($data['username'] . ':' . $realm . ':' . $result->password);
 //       $login_type_log = 'cleartext legacy password';
@@ -10717,7 +10717,7 @@ function getSipAccountFromHTTPDigest () {
 
     $A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
     $valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
-        
+
     if ($data['response'] != $valid_response ) {
     	header('HTTP/1.1 401 Unauthorized');
         header('WWW-Authenticate: Digest realm="'.$realm.
