@@ -40,11 +40,9 @@
         e.preventDefault();
       });
 
-    $("button[rel=popover]")
-      .popover()
-      .click(function(e) {
-        e.preventDefault();
-      });
+
+   $("button[rel=popover]")
+      .popover();
 
     $("input[rel=popover]")
       .popover()
