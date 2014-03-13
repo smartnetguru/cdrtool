@@ -1055,7 +1055,6 @@ class CDRS {
             $c=$this->CDRdb->f('c');
         }
 
-        print "$c to normalize\n";
         $this->status['cdr_to_normalize']=$c;
 
         //$this->status['cdr_to_normalize']=$this->CDRdb->num_rows();
