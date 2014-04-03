@@ -1077,7 +1077,7 @@ class CDRS {
 
         // For loop to process 1k records each time
         for ($i = 0; $i <= $this->status['cdr_to_normalize']; $i=$i+1000) {
-          
+
             $query=sprintf("select *, UNIX_TIMESTAMP($this->startTimeField) as timestamp
                 from %s where %s and %s limit 0,1000",
                 addslashes($table),
@@ -1121,7 +1121,7 @@ class CDRS {
                             $this->csv_file_cannot_be_opened = true;
                         }
                     }
-            
+
                     if ($CDR->broken_rate) {
                         $this->brokenRates[$CDR->DestinationId]++;
                     }
@@ -2310,8 +2310,7 @@ class CDR {
             if ($updatedFields) {
                 if ($this->CDRS->CDRdb1->query($query1)) {
                     if ($this->CDRS->CDRdb1->affected_rows()) {
-                        if ($this->isBillingPartyLocal()) {
-                            if ($table == $this->CDRS->table) {
+                        if ( $this->isBillingPartyLocal() && $table == "radacct".date('Ym')) {
                                 // cache usage only if current month
 
                                 $_traffic=($this->inputTraffic+$this->outputTraffic)/2;
@@ -2323,7 +2322,6 @@ class CDR {
                                              );
 
                                 $this->cacheQuotaUsage($_usage);
-                            }
                         }
 
                     } else {
@@ -2334,8 +2332,7 @@ class CDR {
 
                             if ($this->CDRS->CDRdb1->query($query2)) {
                                 if ($this->CDRS->CDRdb1->affected_rows()) {
-                                    if ($this->isBillingPartyLocal()) {
-                                        if ($previousTable == $this->CDRS->table) {
+                                    if ( $this->isBillingPartyLocal() && $previousTable == "radacct".date('Ym')) {
                                             // cache usage only if current month
 
                                             $_traffic=($this->inputTraffic+$this->outputTraffic)/2;
@@ -2346,7 +2343,6 @@ class CDR {
                                                           'traffic'  => $_traffic
                                                           );
                                             $this->cacheQuotaUsage($_usage);
-                                        }
                                     }
                                 }
                             } else {
@@ -3060,7 +3056,7 @@ class MaxRate extends CSVWritter {
         $cdr['charge_info'] = sprintf('"%s","%s","%s"',$CDR->price,$cdr['profile'],$CDR->destinationName);
 
         if ($CDR->flow == 'on-net') {
-            
+
             # RFP 4.2.1
 
             $CalleeRPID=$this->getRPIDforAccount($CDR->CanonicalURI);
@@ -3072,7 +3068,7 @@ class MaxRate extends CSVWritter {
             $cdr['extra'] = $cdr['extra']."$CDR->flow";
         } else if ($CDR->flow == 'outgoing') {
             # RFP 4.2.2
-            
+
             $cdr['extra'] = $cdr['extra']."$CDR->flow";
 
         } else if ($CDR->flow == 'incoming') {
@@ -3115,7 +3111,7 @@ class MaxRate extends CSVWritter {
             $cdr['destination'] = $diverter_origin;
 
             $cdr['diversion'] = $cdr['c_num'];
-            
+
             $cdr['extra'] = $cdr['extra']."incoming-diverted-on-net";
 
         } else if ($CDR->flow == 'diverted-off-net') {
