@@ -99,15 +99,15 @@
 
       sip_proxies=0;
 
-      if (typeof thorData.node_statistics != "undefined") {
+      if (typeof thorData.node_statistics != "undefined" && !$.isEmptyObject(thorData.node_statistics)) {
           sip_proxies = sip_proxies + Object.keys(thorData.node_statistics).length;
       }
 
-      if (typeof thorData.conference_servers != "undefined") {
+      if (typeof thorData.conference_servers != "undefined" && !$.isEmptyObject(thorData.conference_servers)) {
           sip_proxies = sip_proxies+ Object.keys(thorData.conference_servers).length;
       }
 
-      if (typeof thorData.voicemail_servers != "undefined") {
+      if (typeof thorData.voicemail_servers != "undefined" && !$.isEmptyObject(thorData.voicemail_servers)) {
           sip_proxies = sip_proxies+ Object.keys(thorData.voicemail_servers).length;
       }
 
@@ -116,7 +116,7 @@
         //var sip_proxies = Object.keys(thorData.node_statistics).length
       var counter= 0;
 
-    if (typeof thorData.voicemail_servers != "undefined") {
+    if (typeof thorData.voicemail_servers != "undefined" && !$.isEmptyObject(thorData.voicemail_servers)) {
       $.each(thorData.voicemail_servers, function( key, value ) {
         position = ((2/sip_proxies)*counter);
         counter++;
@@ -158,10 +158,10 @@
         x=0;
         y=0;
         if (position  === 0.5 ) {
-          x= -10;
+          x= -20;
           align='start';
         } else if (position === 1.5) {
-          x= 10;
+          x= 20;
           align='end';
         } else if ((position > 1 && position < 1.5 )|| (position > 1.5 && position < 2)) {
           x = 25;
@@ -187,7 +187,7 @@
 
         });
         }
-        if (typeof thorData.conference_servers != "undefined") {
+        if (typeof thorData.conference_servers != "undefined" && !$.isEmptyObject(thorData.conference_servers)) {
         $.each(thorData.conference_servers, function( key, value ) {
           position = ((2/sip_proxies)*counter);
           counter++;
@@ -221,10 +221,10 @@
         x=0;
         y=0;
          if (position  === 0.5 ) {
-            x= -10;
+            x= -20;
             align='start';
           } else if (position === 1.5) {
-            x= 10;
+            x= 20;
             align='end';
           } else if ((position > 1 && position < 1.5 )|| (position > 1.5 && position < 2)) {
             x = 25;
@@ -252,7 +252,7 @@
 
         });
         }
-if (typeof thorData.node_statistics != "undefined") {
+if (typeof thorData.node_statistics != "undefined" && !$.isEmptyObject(thorData.node_statistics)) {
         $.each(thorData.node_statistics, function( key, value ) {
           position = ((2/sip_proxies)*counter);
           counter++;
@@ -322,10 +322,10 @@ if (typeof thorData.node_statistics != "undefined") {
 
         align='start';
          if (position  === 0.5 ) {
-            x= -10;
+            x= -20;
             align='start';
           } else if (position === 1.5) {
-            x= 10;
+            x= 20;
             align='end';
           } else if ((position > 1 && position < 1.5 )|| (position > 1.5 && position < 2)) {
             x = 25;
@@ -349,7 +349,7 @@ if (typeof thorData.node_statistics != "undefined") {
           }).x(315).y(315).animate(500, SVG.easing.quartIn).cy(315+(315*0.6)*Math.cos(position*Math.PI)-y).x(
               315+(315*0.6)*Math.sin(position*Math.PI)-x).fill('#5177bd');
 
-align='start';
+        align='start';
         x =0 ;
         y = 0;
           if (position === 0.5) {
