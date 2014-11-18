@@ -632,7 +632,8 @@ class SipSettings {
             $this->disable_extra_groups=$this->soapEngines[$this->sip_engine]['disable_extra_groups'];
         }
 
-        if (array_key_exists($this->soapEngines[$this->sip_engine]['notify_on_account_changes'])) {
+        if (strlen($this->soapEngines[$this->sip_engine]['notify_on_account_changes'])) {
+            dprint($this->soapEngines[$this->sip_engine]['notify_on_account_changes']);
             $this->notify_on_account_changes=$this->soapEngines[$this->sip_engine]['notify_on_account_changes'];
         }
         if ($this->loginCredentials['templates_path']) {
@@ -3974,7 +3975,7 @@ class SipSettings {
         $this->getDivertTargets();
         $this->getDiversions();
         */
-        $this->changedFields=[];
+        $this->changedFields=array();
         $this->sendCEmail=0;
 
         foreach ($this->form_elements as $el) {
@@ -4370,7 +4371,7 @@ class SipSettings {
             } else {
                 dprint("Call updateAccount");
                 if ($this->sendCEmail && $this->notify_on_account_changes) {
-                    $this->sendChangedEmail(False,$this->changedFields)
+                    $this->sendChangedEmail(False,$this->changedFields);
                 }
             }
 
@@ -7635,8 +7636,9 @@ class SipSettings {
         }
     }
 
-    function sendChangedEmail($skip_html=False, $fields=[]) {
+    function sendChangedEmail($skip_html=False, $fields=array()) {
         dprint ("SipSettings->sendChangedEmail($this->email)");
+        //dprint_r($fields);
         $this->ip = $_SERVER['REMOTE_ADDR'];
         if (!$this->email && !$skip_html) {
             print "<p><font color=blue>";
@@ -7657,7 +7659,7 @@ class SipSettings {
             return false;
         }
 
-        $tpl_html = $this->getEmailChangedTemplateHTML($this->reseller, $this->Preferences['language']);
+        $tpl_html = $this->getChangedEmailTemplateHTML($this->reseller, $this->Preferences['language']);
 
         define("SMARTY_DIR", "/usr/share/php/smarty/libs/");
         include_once(SMARTY_DIR . 'Smarty.class.php');
@@ -7667,7 +7669,7 @@ class SipSettings {
 
         //$smarty->use_sub_dirs = true;
         //$smarty->cache_dir = 'templates_c';
-
+        $this->fields = $fields;
         $smarty->assign('client', $this);
         $bodyt = $smarty->fetch($tpl);
 
