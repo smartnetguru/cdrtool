@@ -11676,6 +11676,23 @@ class Enrollment {
     var $create_certificate         = 0;
     var $customer_belongs_to_reseller = false;
 
+    function log_action($action){
+        global $auth;
+        $location = "Unknown";
+        $_loc=geoip_record_by_name($_SERVER['REMOTE_ADDR']);
+        if ($_loc['country_name']) {
+            $location = $_loc['country_name'];
+            }
+        $log = sprintf("CDRTool login username=%s, IP=%s, location=%s, action=%s, script=%s",
+        $auth->auth["uname"],
+        $_SERVER['REMOTE_ADDR'],
+        $location,
+        $action,
+        $_SERVER['PHP_SELF']
+        );
+        syslog(LOG_NOTICE, $log);
+    }
+
     function Enrollment() {
 
         require($this->configuration_file);
@@ -11771,6 +11788,7 @@ class Enrollment {
 
         if (!$this->init) return false;
 
+
         if (!$_REQUEST['email']) {
             $return=array('success'       => false,
                           'error'         => 'value_error',
@@ -11822,7 +11840,7 @@ class Enrollment {
 
         if ($this->create_customer && !$_REQUEST['owner']) {
         	// create owner id
-
+            $this->log_action("Create owner account");
             $customerEngine           = 'customers@'.$this->customerEngine;
             $this->CustomerSoapEngine = new SoapEngine($customerEngine,$this->soapEngines,$this->customerLoginCredentials);
             $_customer_class          = $this->CustomerSoapEngine->records_class;
@@ -11915,6 +11933,8 @@ class Enrollment {
                               );
                 print (json_encode($return));
                 return false;
+            } else {
+                $this->log_action("Owner account created");
             }
 
             $owner=$result->id;
@@ -11979,6 +11999,8 @@ class Enrollment {
                             'properties'=> $sip_properties
                             );
 
+        $this->log_action("Create SIP account");
+
         if (!$result = $this->sipRecords->addRecord($sipAccount)) {
             if ($this->sipRecords->SoapEngine->exception->errorstring) {
 
@@ -12015,6 +12037,7 @@ class Enrollment {
             return false;
 
         } else {
+            $this->log_action("SIP account created");
             $sip_address=$result->id->username.'@'.$result->id->domain;
 
             if ($this->create_certificate) {
@@ -12035,6 +12058,7 @@ class Enrollment {
 
                     if ($this->create_voicemail) {
                         // Add voicemail account
+                        $this->log_action("Add voicemail account");
                         $SipSettings->addVoicemail();
                         $SipSettings->setVoicemailDiversions();
                     }
@@ -12046,6 +12070,7 @@ class Enrollment {
             }
 
             if ($this->create_email_alias) {
+                $this->log_action("Add email alias");
                 $emailEngine           = 'email_aliases@'.$this->emailEngine;
                 $this->EmailSoapEngine = new SoapEngine($emailEngine,$this->soapEngines,$this->sipLoginCredentials);
                 $_email_class          = $this->EmailSoapEngine->records_class;
